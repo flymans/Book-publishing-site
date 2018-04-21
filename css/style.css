@@ -15,4 +15,13 @@
   font-size: 55px;
   color: red;
 }
- Run co
+
+.active{
+border:2px solid blue;
+border-radius: 5px;
+}
+
+.main-background{
+background: url(../img/background.jpg);
+color: white;
+}

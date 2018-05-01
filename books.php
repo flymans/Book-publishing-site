@@ -13,6 +13,18 @@
 <body class="main-background">
   <?php
     include 'database.php';
+    $query = "SELECT * FROM books" ;
+      $result = mysql_query($query) or die(mysql_error());
+      $num_of_books = mysql_num_rows($result);
+      $num_of_pages = $num_of_books/10;
+
+    $page = $_GET["page"];
+    if($page=="" || $page=="1"){
+      $current_page=1;
+    }
+    else {
+      $current_page=$page*10-10;
+    }
   ?>
   <header class="main-header container-fluid">
     <nav class="navbar navbar-light row justify-content-center" style="background-color: #e3f2fd;">
@@ -52,15 +64,50 @@ echo '<option value="'.$row[0].'">'. $row[0]. '</option>';
     $name = trim($_GET['Name']);
     $author = trim($_GET['Author']);
     $category = trim($_GET['Category']);
-    $query = "SELECT * FROM books where name like '%$name%'and author like '%$author%'and category like '%$category%' " ;
+    $query = "SELECT * FROM books where name like '%$name%'and author like '%$author%'and category like '%$category%'" ;
       $result = mysql_query($query) or die(mysql_error());
+      $num_of_books = mysql_num_rows($result);
+      $num_of_pages = $num_of_books/10;
+      $query = "SELECT * FROM books where name like '%$name%'and author like '%$author%'and category like '%$category%' LIMIT $current_page, 10" ;
+        $result = mysql_query($query) or die(mysql_error());
       if (mysql_num_rows($result)==0){
         echo '<div style="position: relative; bottom: 20px;" class="pb-4 alert alert-warning">Книг по данному запросу не найдено.</div>';
       }
-
-
-            // $query = "SELECT * FROM books";
-            // $result = mysql_query($query) or die(mysql_error());
+      for($i=1;$i<=$num_of_pages;$i++){
+        echo '<a href="books.php?Name='.$name.'&Author='.$author.'&Category='.$category.'&find=Найти&page='.$i.'">'.$i.' </a>';
+      }
+            while ($row = mysql_fetch_array($result))
+            {
+              echo '<div class="row">';
+              echo '<div class="col-md-2 text-center">';
+              echo '<img src="'.$row[6].'">';
+              echo '</div>';
+              echo '<div class="col-md-10">';
+              echo '<h5>'.$row[1].'</h5>';
+              echo '<p>
+                        <span style="color:#50C1E9; font-size:14px">'.$row[2].'</span><br><span>'.$row[4].' год • '.$row[3].' страниц • '.$row[8].'</span><br>
+                          <button class="btn btn-primary" type="button" data-toggle="collapse" data-tarGET="#'.+$row[0].'" aria-expanded="false" aria-controls="collapseExample">
+                          Описание
+                          </button>
+                          <a href="'.$row[5].'/read" target="_blank">Пролистать</a>
+                    </p>
+                    <div class="collapse" id="'.+$row[0].'">
+                    <div class="card card-body">
+                      '.$row[7].'
+                    </div>
+                  </div>';
+              echo '</div>';
+              echo '</div>';
+            }
+            for($i=1;$i<=$num_of_pages;$i++){
+              echo '<a href="books.php?Name='.$name.'&Author='.$author.'&Category='.$category.'&find=Найти&page='.$i.'">'.$i.' </a>';
+            }
+          }
+          else {$query = "SELECT * FROM books LIMIT $current_page, 10" ;
+            $result = mysql_query($query) or die(mysql_error());
+            for($i=1;$i<=$num_of_pages;$i++){
+              echo '<a href="books.php?page='.$i.'">'.$i.' </a>';
+            }
             while ($row = mysql_fetch_array($result))
             {
               echo '<div class="row">';
@@ -84,32 +131,10 @@ echo '<option value="'.$row[0].'">'. $row[0]. '</option>';
               echo '</div>';
               echo '</div>';
             }
+            for($i=1;$i<=$num_of_pages;$i++){
+              echo '<a href="books.php?page='.$i.'">'.$i.' </a>';
+            }
           }
-          else {$query = "SELECT * FROM books" ;
-            $result = mysql_query($query) or die(mysql_error());
-            while ($row = mysql_fetch_array($result))
-            {
-              echo '<div class="row">';
-              echo '<div class="col-md-2 text-center">';
-              echo '<img src="'.$row[6].'">';
-              echo '</div>';
-              echo '<div class="col-md-10">';
-              echo '<h5>'.$row[1].'</h5>';
-              echo '<p>
-                        <span style="color:#50C1E9; font-size:14px">'.$row[2].'</span><br><span>'.$row[4].' год • '.$row[3].' страниц • '.$row[8].'</span><br>
-                          <button class="btn btn-primary" type="button" data-toggle="collapse" data-tarGET="#'.+$row[0].'" aria-expanded="false" aria-controls="collapseExample">
-                          Описание
-                          </button>
-                          <a href="'.$row[5].'/read">Пролистать</a>
-                    </p>
-                    <div class="collapse" id="'.+$row[0].'">
-                    <div class="card card-body">
-                      '.$row[7].'
-                    </div>
-                  </div>';
-              echo '</div>';
-              echo '</div>';
-            }}
           ?>
     </div>
   </main>

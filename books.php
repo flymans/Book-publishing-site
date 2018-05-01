@@ -16,14 +16,14 @@
     $query = "SELECT * FROM books" ;
       $result = mysql_query($query) or die(mysql_error());
       $num_of_books = mysql_num_rows($result);
-      $num_of_pages = $num_of_books/10;
+      $num_of_pages = $num_of_books/25;
 
     $page = $_GET["page"];
     if($page=="" || $page=="1"){
       $current_page=1;
     }
     else {
-      $current_page=$page*10-10;
+      $current_page=$page*25-25;
     }
   ?>
   <header class="main-header container-fluid">
@@ -67,15 +67,17 @@ echo '<option value="'.$row[0].'">'. $row[0]. '</option>';
     $query = "SELECT * FROM books where name like '%$name%'and author like '%$author%'and category like '%$category%'" ;
       $result = mysql_query($query) or die(mysql_error());
       $num_of_books = mysql_num_rows($result);
-      $num_of_pages = $num_of_books/10;
-      $query = "SELECT * FROM books where name like '%$name%'and author like '%$author%'and category like '%$category%' LIMIT $current_page, 10" ;
+      $num_of_pages = $num_of_books/25;
+      $query = "SELECT * FROM books where name like '%$name%'and author like '%$author%'and category like '%$category%' LIMIT $current_page, 25" ;
         $result = mysql_query($query) or die(mysql_error());
       if (mysql_num_rows($result)==0){
         echo '<div style="position: relative; bottom: 20px;" class="pb-4 alert alert-warning">Книг по данному запросу не найдено.</div>';
       }
-      for($i=1;$i<=$num_of_pages;$i++){
-        echo '<a href="books.php?Name='.$name.'&Author='.$author.'&Category='.$category.'&find=Найти&page='.$i.'">'.$i.' </a>';
-      }
+      echo '<nav aria-label="Навигация по сайту">
+    <ul class="pagination justify-content-center">';
+    for($i=1;$i<=$num_of_pages;$i++){
+    echo '<li class="page-item"><a class="page-link" href="books.php?Name='.$name.'&Author='.$author.'&Category='.$category.'&find=Найти&page='.$i.'">'.$i.' </a></li>'; }
+    echo '  </ul></nav>';
             while ($row = mysql_fetch_array($result))
             {
               echo '<div class="row">';
@@ -99,15 +101,19 @@ echo '<option value="'.$row[0].'">'. $row[0]. '</option>';
               echo '</div>';
               echo '</div>';
             }
-            for($i=1;$i<=$num_of_pages;$i++){
-              echo '<a href="books.php?Name='.$name.'&Author='.$author.'&Category='.$category.'&find=Найти&page='.$i.'">'.$i.' </a>';
-            }
+            echo '<nav aria-label="Навигация по сайту">
+  <ul class="pagination justify-content-center">';
+    for($i=1;$i<=$num_of_pages;$i++){
+      echo '<li class="page-item"><a class="page-link" href="books.php?Name='.$name.'&Author='.$author.'&Category='.$category.'&find=Найти&page='.$i.'">'.$i.' </a></li>'; }
+      echo '  </ul></nav>';
           }
-          else {$query = "SELECT * FROM books LIMIT $current_page, 10" ;
+          else {$query = "SELECT * FROM books LIMIT $current_page, 25" ;
             $result = mysql_query($query) or die(mysql_error());
-            for($i=1;$i<=$num_of_pages;$i++){
-              echo '<a href="books.php?page='.$i.'">'.$i.' </a>';
-            }
+            echo '<nav aria-label="Навигация по сайту">
+  <ul class="pagination justify-content-center">';
+    for($i=1;$i<=$num_of_pages;$i++){
+      echo '<li class="page-item"><a class="page-link" href="books.php?page='.$i.'">'.$i.' </a></li>'; }
+      echo '  </ul></nav>';
             while ($row = mysql_fetch_array($result))
             {
               echo '<div class="row">';
@@ -131,11 +137,11 @@ echo '<option value="'.$row[0].'">'. $row[0]. '</option>';
               echo '</div>';
               echo '</div>';
             }
-            for($i=1;$i<=$num_of_pages;$i++){
-              echo '<a href="books.php?page='.$i.'">'.$i.' </a>';
-            }
-          }
-          ?>
+            echo '<nav aria-label="Навигация по сайту">
+          <ul class="pagination justify-content-center">';
+          for($i=1;$i<=$num_of_pages;$i++){
+          echo '<li class="page-item"><a class="page-link" href="books.php?page='.$i.'">'.$i.' </a></li>'; }
+          echo '  </ul></nav>'; }?>
     </div>
   </main>
   <footer id="footer" class="bottom navbar navbar-light bg-light" style="color:black">
